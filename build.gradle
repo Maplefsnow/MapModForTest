@@ -1,9 +1,7 @@
-
 plugins {
     id 'eclipse'
     id 'idea'
     id 'net.minecraftforge.gradle' version '[6.0.16,6.2)'
-    id 'com.gradleup.shadow' version '8.3.+'
 }
 
 
@@ -150,7 +148,12 @@ dependencies {
 
     implementation 'org.telegram:telegrambots-longpolling:8.0.0'
     implementation 'org.telegram:telegrambots-client:8.0.0'
+
+    jarJar group: 'org.telegram', name: 'telegrambots-longpolling', version: '[8.0.0,)'
+    jarJar group: 'org.telegram', name: 'telegrambots-client', version: '[8.0.0,)'
 }
+
+jarJar.enable()
 
 // This block of code expands all declared replace properties in the specified resource targets.
 // A missing property will result in an error. Properties are expanded using ${} Groovy notation.
@@ -188,14 +191,4 @@ tasks.named('jar', Jar).configure {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
-}
-
-shadowJar {
-    configurations = [project.configurations.implementation]
-    archiveClassifier = 'all'
-}
-
-reobfJar {
-    dependsOn(shadowJar)
-    input.set shadowJar.archiveFile
 }
