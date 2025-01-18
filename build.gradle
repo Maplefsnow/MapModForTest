@@ -146,11 +146,18 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
-    implementation 'org.telegram:telegrambots-longpolling:8.0.0'
-    implementation 'org.telegram:telegrambots-client:8.0.0'
+    implementation('org.telegram:telegrambots-longpolling:8.0.0_mapped_official_1.20.1')
+    implementation 'org.telegram:telegrambots-client:8.0.0_mapped_official_1.20.1'
+    implementation 'org.telegram:telegrambots-meta:8.0.0_mapped_official_1.20.1'
+
+    minecraftLibrary fg.deobf('org.telegram:telegrambots-longpolling:8.0.0')
+    minecraftLibrary fg.deobf('org.telegram:telegrambots-client:8.0.0')
+    minecraftLibrary fg.deobf('org.telegram:telegrambots-meta:8.0.0')
+    minecraftLibrary fg.deobf('com.squareup.okhttp3:okhttp:3.6.0')
 
     jarJar group: 'org.telegram', name: 'telegrambots-longpolling', version: '[8.0.0,)'
     jarJar group: 'org.telegram', name: 'telegrambots-client', version: '[8.0.0,)'
+    jarJar group: 'org.telegram', name: 'telegrambots-meta', version: '[8.0.0,)'
 }
 
 jarJar.enable()
