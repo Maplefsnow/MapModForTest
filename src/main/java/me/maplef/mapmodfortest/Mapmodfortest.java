@@ -108,38 +108,13 @@ public class Mapmodfortest {
         LOGGER.info("HELLO from server starting");
         LOGGER.info("Registering tgBot...");
 
-        Thread tgBotThread = new Thread(() -> {
-            try (TelegramBotsLongPollingApplication botsApplication = new TelegramBotsLongPollingApplication()) {
-                botsApplication.registerBot(System.getenv("BOT_TOKEN"), TGBot.getInstance());
-                LOGGER.info("MyAmazingBot successfully started!");
-
-                Runtime.getRuntime().addShutdownHook(new Thread() {
-                    public void run() {
-                        try {
-                            System.out.println("NekoTownBot GoodBye!");
-                            botsApplication.unregisterBot(System.getenv("BOT_TOKEN"));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            Thread.currentThread().interrupt();
-                        }
-                    }
-                });
-
-                Thread.currentThread().join();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-
-        tgBotThread.start();
-
-        TGBot.getInstance().start();
+        TGBotManager.getInstance().start();
     }
 
     @SubscribeEvent
     public void onServerStopping(ServerStoppingEvent event) {
         LOGGER.info("Goodbye from server starting");
-        TGBot.getInstance().stop();
+        TGBotManager.getInstance().stop();
     }
 
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent

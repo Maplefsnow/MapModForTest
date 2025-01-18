@@ -113,10 +113,6 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
-    // Put repositories for dependencies here
-    // ForgeGradle automatically adds the Forge maven and Maven Central for you
-    mavenCentral()
-
     // If you have mod jar dependencies in ./libs, you can declare them as a repository like so.
     // See https://docs.gradle.org/current/userguide/declaring_repositories.html#sub:flat_dir_resolver
     // flatDir {
@@ -160,10 +156,6 @@ dependencies {
     minecraftLibrary fg.deobf('com.fasterxml.jackson.core:jackson-databind:2.18.2')
     minecraftLibrary fg.deobf('com.fasterxml.jackson.core:jackson-core:2.18.2')
     minecraftLibrary fg.deobf('com.fasterxml.jackson.core:jackson-annotations:2.18.2')
-
-    jarJar group: 'org.telegram', name: 'telegrambots-longpolling', version: '[8.0.0,)'
-    jarJar group: 'org.telegram', name: 'telegrambots-client', version: '[8.0.0,)'
-    jarJar group: 'org.telegram', name: 'telegrambots-meta', version: '[8.0.0,)'
 }
 
 jarJar.enable()
