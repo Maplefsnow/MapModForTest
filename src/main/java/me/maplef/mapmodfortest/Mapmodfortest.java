@@ -28,7 +28,9 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import org.jline.utils.Log;
 import org.slf4j.Logger;
+import org.telegram.telegrambots.longpolling.TelegramBotsLongPollingApplication;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(Mapmodfortest.MODID)
@@ -78,6 +80,8 @@ public class Mapmodfortest {
 
         // Register our mod's ForgeConfigSpec so that Forge can create and load the config file for us
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+
+        MinecraftForge.EVENT_BUS.register(new PlayerListener());
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
@@ -102,6 +106,15 @@ public class Mapmodfortest {
     public void onServerStarting(ServerStartingEvent event) {
         // Do something when the server starts
         LOGGER.info("HELLO from server starting");
+        LOGGER.info("Registering tgBot...");
+
+        try (TelegramBotsLongPollingApplication botsApplication = new TelegramBotsLongPollingApplication()) {
+            botsApplication.registerBot(System.getenv("BOT_TOKEN"), TGBot.getInstance());
+            LOGGER.info("MyAmazingBot successfully started!");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         TGBot.getInstance().start();
     }
 
@@ -114,7 +127,6 @@ public class Mapmodfortest {
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
     @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents {
-
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
             // Some client setup code

@@ -9,14 +9,15 @@ import org.telegram.telegrambots.meta.generics.TelegramClient;
 
 public class TGBot implements LongPollingSingleThreadUpdateConsumer {
     private static final TGBot instance = new TGBot();
-    private final String BOT_TOKEN = "8004078585:AAFB3M9VWNrb-595GTRpXZludcTveeAm17g";
-    private final TelegramClient tgClient = new OkHttpTelegramClient(BOT_TOKEN);
-    private final TelegramBotsLongPollingApplication botsApp = new TelegramBotsLongPollingApplication();
+    private final String BOT_TOKEN = System.getenv("BOT_TOKEN");
+    private TelegramBotsLongPollingApplication botsApp;
+    private final TelegramClient tgClient;
 
-    private static final Object lock = new Object();
     private static boolean isRunning = false;
 
-    private TGBot() {}
+    private TGBot() {
+        tgClient = new OkHttpTelegramClient(BOT_TOKEN);
+    }
 
     public static TGBot getInstance() {
         return instance;
@@ -24,41 +25,16 @@ public class TGBot implements LongPollingSingleThreadUpdateConsumer {
 
     public void start() {
         isRunning = true;
-        Thread botThread = new Thread(() -> {
-            try {
-                botsApp.registerBot(BOT_TOKEN, this);
-                System.out.println("NekoTownBot Hello World!");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
 
-            synchronized (lock) {
-                while (isRunning) {
-                    try {
-                        lock.wait();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            try {
-                System.out.println("NekoTownBot GoodBye!");
-                botsApp.unregisterBot(BOT_TOKEN);
-            } catch (Exception e) {
-                e.printStackTrace();
-                Thread.currentThread().interrupt();
-            }
-        });
-
-        botThread.start();
+        try {
+            LogUtils.getLogger().info("NekoTownBot Hello World!");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void stop() {
-        synchronized (lock) {
-            isRunning = false;
-            lock.notify();
-        }
+        isRunning = false;
     }
 
     @Override
