@@ -1,5 +1,6 @@
 package me.maplef.mapmodfortest;
 
+import com.mojang.logging.LogUtils;
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -22,16 +23,7 @@ public class TGListener implements LongPollingSingleThreadUpdateConsumer {
             String message_text = update.getMessage().getText();
             long chat_id = update.getMessage().getChatId();
 
-            SendMessage message = SendMessage.builder()
-                    .chatId(chat_id)
-                    .text(message_text)
-                    .build();
-
-            try {
-                tgClient.execute(message);
-            } catch (TelegramApiException e) {
-                e.printStackTrace();
-            }
+            LogUtils.getLogger().info(String.format("Received from chat_%ld: %s", chat_id, message_text));
         }
     }
 }

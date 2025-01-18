@@ -3,9 +3,10 @@ package me.maplef.mapmodfortest;
 import com.mojang.logging.LogUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.client.event.ClientChatEvent;
+import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 public class PlayerListener {
     @SubscribeEvent
@@ -17,7 +18,12 @@ public class PlayerListener {
     }
 
     @SubscribeEvent
-    public void onPlayerChat(ClientChatEvent event) {
-        LogUtils.getLogger().info("Player chat: " + event.getMessage());
+    public void onPlayerChat(ServerChatEvent event) {
+        long chat_id = -1002439035442L;
+        try {
+            TGBotManager.getInstance().sendMessage(chat_id, event.getUsername() + ": " + event.getMessage());
+        } catch (TelegramApiException ex) {
+            ex.printStackTrace();
+        }
     }
 }

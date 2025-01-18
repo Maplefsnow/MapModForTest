@@ -1,11 +1,16 @@
 package me.maplef.mapmodfortest;
 
 import com.mojang.logging.LogUtils;
+import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
 import org.telegram.telegrambots.longpolling.TelegramBotsLongPollingApplication;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.meta.generics.TelegramClient;
 
 public class TGBotManager {
     private static final TGBotManager instance = new TGBotManager();
     private final String BOT_TOKEN = System.getenv("BOT_TOKEN");
+    private final TelegramClient tgClient = new OkHttpTelegramClient(BOT_TOKEN);
 
     private static boolean isRunning = false;
 
@@ -44,5 +49,13 @@ public class TGBotManager {
 
     public void stop() {
         isRunning = false;
+    }
+
+    public void sendMessage(long chatId, String text) throws TelegramApiException {
+        SendMessage message = SendMessage.builder()
+                                .chatId(chatId)
+                                .text(text).build();
+
+        tgClient.execute(message);
     }
 }
