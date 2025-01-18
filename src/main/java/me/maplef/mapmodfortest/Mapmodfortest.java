@@ -28,9 +28,9 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import org.jline.utils.Log;
 import org.slf4j.Logger;
 import org.telegram.telegrambots.longpolling.TelegramBotsLongPollingApplication;
+
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(Mapmodfortest.MODID)
@@ -108,12 +108,30 @@ public class Mapmodfortest {
         LOGGER.info("HELLO from server starting");
         LOGGER.info("Registering tgBot...");
 
-        try (TelegramBotsLongPollingApplication botsApplication = new TelegramBotsLongPollingApplication()) {
-            botsApplication.registerBot(System.getenv("BOT_TOKEN"), TGBot.getInstance());
-            LOGGER.info("MyAmazingBot successfully started!");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Thread tgBotThread = new Thread(() -> {
+            try (TelegramBotsLongPollingApplication botsApplication = new TelegramBotsLongPollingApplication()) {
+                botsApplication.registerBot(System.getenv("BOT_TOKEN"), TGBot.getInstance());
+                LOGGER.info("MyAmazingBot successfully started!");
+
+                Runtime.getRuntime().addShutdownHook(new Thread() {
+                    public void run() {
+                        try {
+                            System.out.println("NekoTownBot GoodBye!");
+                            botsApplication.unregisterBot(System.getenv("BOT_TOKEN"));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Thread.currentThread().interrupt();
+                        }
+                    }
+                });
+
+                Thread.currentThread().join();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+        tgBotThread.start();
 
         TGBot.getInstance().start();
     }
