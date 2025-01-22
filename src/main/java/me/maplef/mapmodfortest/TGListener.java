@@ -8,6 +8,10 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.function.Function;
+
 public class TGListener implements LongPollingSingleThreadUpdateConsumer {
     private final String BOT_TOKEN;
     private final TelegramClient tgClient;
@@ -19,11 +23,64 @@ public class TGListener implements LongPollingSingleThreadUpdateConsumer {
 
     @Override
     public void consume(Update update) {
-        if (update.hasMessage() && update.getMessage().hasText()) {
-            String message_text = update.getMessage().getText();
-            long chat_id = update.getMessage().getChatId();
+        if (!update.hasMessage() || !update.getMessage().hasText())
+            return;
 
-            LogUtils.getLogger().info(String.format("Received from chat_%ld: %s", chat_id, message_text));
+        String message_text = update.getMessage().getText();
+        long chat_id = update.getMessage().getChatId();
+
+        if (message_text.startsWith("/")) {
+            message_text = message_text.substring(1);
+            String[] strParts = message_text.split(" ", 2);
+            String commandHead = strParts[0];
+            String params = strParts[1];
+
+            CommandResponse rsp = new CommandResponse();
+            CommandExecutor.execute(commandHead, params, rsp);
+
+            SendMessage message = SendMessage.builder()
+                                    .chatId(chat_id)
+                                    .text(rsp.text)
+                                    .build();
+            try {
+                tgClient.execute(message);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
         }
+
+        LogUtils.getLogger().info(String.format("Received from chat_%ld: %s", chat_id, message_text));
     }
+}
+
+class CommandExecutor {
+    private static final HashSet<String> commandHeaders = new HashSet<>();
+    private static final HashMap<String, Function<String, CommandResponse>> commands = new HashMap<>();
+
+    public static void registerCommand(String header, Function<String, CommandResponse> func) {
+        commandHeaders.add(header);
+        commands.put(header, func);
+    }
+
+    public static boolean execute(String cmdHeader, String param, CommandResponse rsp) {
+        if (!commandHeaders.contains(cmdHeader)) {
+            rsp.number = 0;
+            rsp.text = "no such command!";
+            return false;
+        }
+
+        try {
+            Function<String, CommandResponse> func = commands.get(cmdHeader);
+            rsp = func.apply(param);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        return true;
+    }
+}
+
+class CommandResponse {
+    public String text;
+    public int number;
 }

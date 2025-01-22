@@ -1,11 +1,14 @@
 package me.maplef.mapmodfortest;
 
+import com.mojang.brigadier.Command;
 import com.mojang.logging.LogUtils;
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
 import org.telegram.telegrambots.longpolling.TelegramBotsLongPollingApplication;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
+
+import java.util.function.Function;
 
 public class TGBotManager {
     private static final TGBotManager instance = new TGBotManager();
@@ -22,6 +25,8 @@ public class TGBotManager {
 
     public void start() {
         isRunning = true;
+
+        registerCommands();
 
         Thread tgBotThread = new Thread(() -> {
             try (TelegramBotsLongPollingApplication botsApplication = new TelegramBotsLongPollingApplication()) {
@@ -51,11 +56,25 @@ public class TGBotManager {
         isRunning = false;
     }
 
-    public void sendMessage(long chatId, String text) throws TelegramApiException {
-        SendMessage message = SendMessage.builder()
-                                .chatId(chatId)
-                                .text(text).build();
+    public void sendMessage(long chatId, String text) {
+        new Thread(() -> {
+            SendMessage message = SendMessage.builder()
+                    .chatId(chatId)
+                    .text(text).build();
 
-        tgClient.execute(message);
+            try {
+                tgClient.execute(message);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+     static void registerCommands() {
+         CommandExecutor.registerCommand("ping", (String str) -> {
+             CommandResponse rsp = new CommandResponse();
+             rsp.text = "pong!";
+             return rsp;
+         });
     }
 }

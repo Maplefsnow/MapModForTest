@@ -15,15 +15,12 @@ public class PlayerListener {
         LogUtils.getLogger().info("Player interact!");
         Player player = event.getEntity();
         player.sendSystemMessage(Component.literal("weeeeeeeeeeeeeeeeeeeee"));
+        
     }
 
     @SubscribeEvent
-    public void onPlayerChat(ServerChatEvent event) {
+    synchronized public void onPlayerChat(ServerChatEvent event) {
         long chat_id = -1002439035442L;
-        try {
-            TGBotManager.getInstance().sendMessage(chat_id, event.getUsername() + ": " + event.getMessage());
-        } catch (TelegramApiException ex) {
-            ex.printStackTrace();
-        }
+        TGBotManager.getInstance().sendMessage(chat_id, event.getUsername() + ": " + event.getMessage());
     }
 }
