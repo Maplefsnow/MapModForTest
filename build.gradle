@@ -146,12 +146,14 @@ dependencies {
     implementation 'org.telegram:telegrambots-longpolling:8.0.0_mapped_official_1.20.1'
     implementation 'org.telegram:telegrambots-client:8.0.0_mapped_official_1.20.1'
     implementation 'org.telegram:telegrambots-meta:8.0.0_mapped_official_1.20.1'
+    implementation 'org.telegram:telegrambots-abilities:8.0.0_mapped_official_1.20.1'
 
+    minecraftLibrary fg.deobf('org.telegram:telegrambots-abilities:8.0.0')
     minecraftLibrary fg.deobf('org.telegram:telegrambots-longpolling:8.0.0')
     minecraftLibrary fg.deobf('org.telegram:telegrambots-client:8.0.0')
     minecraftLibrary fg.deobf('org.telegram:telegrambots-meta:8.0.0')
     minecraftLibrary fg.deobf('com.squareup.okhttp3:okhttp:4.9.3')
-    minecraftLibrary fg.deobf('org.jetbrains.kotlin:kotlin-stdlib:2.1.0')
+    minecraftLibrary fg.deobf('org.jetbrains.kotlin:kotlin-stdlib:1.9.22')
     minecraftLibrary fg.deobf('com.squareup.okio:okio-jvm:3.9.0')
     minecraftLibrary fg.deobf('com.fasterxml.jackson.core:jackson-databind:2.18.2')
     minecraftLibrary fg.deobf('com.fasterxml.jackson.core:jackson-core:2.18.2')

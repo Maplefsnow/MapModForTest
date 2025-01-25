@@ -1,15 +1,19 @@
 package me.maplef.mapmodfortest;
 
 import com.mojang.logging.LogUtils;
+
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
 import org.telegram.telegrambots.longpolling.TelegramBotsLongPollingApplication;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
+import me.maplef.mapmodfortest.commands.CommandResponse;
+
 
 public class TGBotManager {
     private static final TGBotManager instance = new TGBotManager();
-    private final String BOT_TOKEN = System.getenv("BOT_TOKEN");
+    private final String BOT_TOKEN = ConfigManager.COMMON.bot_token.get();
+    private final long player_group_id = ConfigManager.COMMON.player_group_id.get();
     private final TelegramClient tgClient = new OkHttpTelegramClient(BOT_TOKEN);
 
     private static boolean isRunning = false;
@@ -23,14 +27,18 @@ public class TGBotManager {
     public void start() {
         isRunning = true;
 
+        registerCommands();
+
         Thread tgBotThread = new Thread(() -> {
             try (TelegramBotsLongPollingApplication botsApplication = new TelegramBotsLongPollingApplication()) {
                 botsApplication.registerBot(BOT_TOKEN, new TGListener(BOT_TOKEN));
                 LogUtils.getLogger().info("MyTelegramBot successfully started!");
+                this.sendMessage(player_group_id, "MapBotForge started from test server!");
 
                 Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                     try {
                         System.out.println("NekoTownBot GoodBye!");
+                        this.sendMessage(player_group_id, "MapBotForge stopped from test server!");
                         botsApplication.unregisterBot(BOT_TOKEN);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -51,11 +59,37 @@ public class TGBotManager {
         isRunning = false;
     }
 
-    public void sendMessage(long chatId, String text) throws TelegramApiException {
-        SendMessage message = SendMessage.builder()
-                                .chatId(chatId)
-                                .text(text).build();
+    public void sendMessage(long chatId, String text) {
+        new Thread(() -> {
+            SendMessage message = SendMessage.builder()
+                    .chatId(chatId)
+                    .text(text).build();
 
-        tgClient.execute(message);
+            try {
+                tgClient.execute(message);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+     static void registerCommands() {
+         CommandManager.registerCommand("ping", (Integer argc, String[] argv) -> {
+            CommandResponse rsp = new CommandResponse();
+            rsp.text = "pong!";
+            return rsp;
+         });
+
+         CommandManager.registerCommand("test", (Integer argc, String[] argv) -> {
+            CommandResponse rsp = new CommandResponse();
+
+            rsp.text = "Test command args: ";
+            for (String arg : argv) {
+                rsp.text += arg + " ";
+            }
+            rsp.text = rsp.text.trim();
+
+            return rsp;
+         });
     }
 }
