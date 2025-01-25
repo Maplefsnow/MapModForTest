@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import kotlin.jvm.functions.Function2;
+import me.maplef.mapmodfortest.commands.CommandResponse;
 
 public class CommandManager {
     private static final HashSet<String> commandHeaders = new HashSet<>();
@@ -32,9 +33,4 @@ public class CommandManager {
 
         return rsp;
     }
-}
-
-class CommandResponse {
-    public short code;
-    public String text;
 }

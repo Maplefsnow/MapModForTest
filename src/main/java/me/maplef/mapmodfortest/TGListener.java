@@ -1,18 +1,17 @@
 package me.maplef.mapmodfortest;
 
 import com.mojang.logging.LogUtils;
+
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
+import me.maplef.mapmodfortest.commands.CommandResponse;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.function.Function;
 
 public class TGListener implements LongPollingSingleThreadUpdateConsumer {
     private final String BOT_TOKEN;
@@ -57,7 +56,7 @@ public class TGListener implements LongPollingSingleThreadUpdateConsumer {
             }
         }
 
-        LogUtils.getLogger().info(String.format("Received from chat_%ld: %s", chat_id, message_text));
+        LogUtils.getLogger().info(String.format("Received from chat_%d: %s", chat_id, message_text));
     }
 }
 
