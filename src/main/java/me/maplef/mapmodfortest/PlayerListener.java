@@ -6,7 +6,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 public class PlayerListener {
     @SubscribeEvent

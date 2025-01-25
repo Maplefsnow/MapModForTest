@@ -8,8 +8,10 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.function.Function;
 
 public class TGListener implements LongPollingSingleThreadUpdateConsumer {
@@ -33,12 +35,16 @@ public class TGListener implements LongPollingSingleThreadUpdateConsumer {
             message_text = message_text.substring(1);
             String[] strParts = message_text.split(" ", 2);
             String commandHead = strParts[0];
-            String params = "";
+            Integer paramCnt = 0;
+            List<String> params = new ArrayList<>();
             if (strParts.length > 1) {
-                params = strParts[1];
+                paramCnt = strParts.length - 1;
+                for (int i = 1; i < strParts.length; i++) {
+                    params.add(strParts[i]);
+                }
             }
 
-            CommandResponse rsp = CommandExecutor.execute(commandHead, params);
+            CommandResponse rsp = CommandManager.execute(commandHead, paramCnt, params.toArray(new String[params.size()]));
 
             SendMessage message = SendMessage.builder()
                                     .chatId(chat_id)
@@ -55,36 +61,3 @@ public class TGListener implements LongPollingSingleThreadUpdateConsumer {
     }
 }
 
-class CommandExecutor {
-    private static final HashSet<String> commandHeaders = new HashSet<>();
-    private static final HashMap<String, Function<String, CommandResponse>> commands = new HashMap<>();
-
-    public static void registerCommand(String header, Function<String, CommandResponse> func) {
-        commandHeaders.add(header);
-        commands.put(header, func);
-    }
-
-    public static CommandResponse execute(String cmdHeader, String param) {
-        CommandResponse rsp = new CommandResponse();
-
-        if (!commandHeaders.contains(cmdHeader)) {
-            rsp.number = 0;
-            rsp.text = "no such command!";
-            return rsp;
-        }
-
-        try {
-            Function<String, CommandResponse> func = commands.get(cmdHeader);
-            rsp = func.apply(param);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        return rsp;
-    }
-}
-
-class CommandResponse {
-    public String text;
-    public int number;
-}

@@ -29,8 +29,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
-import org.telegram.telegrambots.longpolling.TelegramBotsLongPollingApplication;
-
+import org.slf4j.Marker;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(Mapmodfortest.MODID)
@@ -105,9 +104,8 @@ public class Mapmodfortest {
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
         // Do something when the server starts
-        LOGGER.info("HELLO from server starting");
         LOGGER.info("Registering tgBot...");
-
+        
         TGBotManager.getInstance().start();
     }
 

@@ -71,7 +71,7 @@ public class TGBotManager {
     }
 
      static void registerCommands() {
-         CommandExecutor.registerCommand("ping", (String str) -> {
+         CommandManager.registerCommand("ping", (Integer argc, String[] argv) -> {
              CommandResponse rsp = new CommandResponse();
              rsp.text = "pong!";
              return rsp;
