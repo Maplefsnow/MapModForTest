@@ -143,7 +143,7 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
-    implementation('org.telegram:telegrambots-longpolling:8.0.0_mapped_official_1.20.1')
+    implementation 'org.telegram:telegrambots-longpolling:8.0.0_mapped_official_1.20.1'
     implementation 'org.telegram:telegrambots-client:8.0.0_mapped_official_1.20.1'
     implementation 'org.telegram:telegrambots-meta:8.0.0_mapped_official_1.20.1'
 
@@ -157,8 +157,6 @@ dependencies {
     minecraftLibrary fg.deobf('com.fasterxml.jackson.core:jackson-core:2.18.2')
     minecraftLibrary fg.deobf('com.fasterxml.jackson.core:jackson-annotations:2.18.2')
 }
-
-jarJar.enable()
 
 // This block of code expands all declared replace properties in the specified resource targets.
 // A missing property will result in an error. Properties are expanded using ${} Groovy notation.
