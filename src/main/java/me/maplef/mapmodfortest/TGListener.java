@@ -33,10 +33,12 @@ public class TGListener implements LongPollingSingleThreadUpdateConsumer {
             message_text = message_text.substring(1);
             String[] strParts = message_text.split(" ", 2);
             String commandHead = strParts[0];
-            String params = strParts[1];
+            String params = "";
+            if (strParts.length > 1) {
+                params = strParts[1];
+            }
 
-            CommandResponse rsp = new CommandResponse();
-            CommandExecutor.execute(commandHead, params, rsp);
+            CommandResponse rsp = CommandExecutor.execute(commandHead, params);
 
             SendMessage message = SendMessage.builder()
                                     .chatId(chat_id)
@@ -62,11 +64,13 @@ class CommandExecutor {
         commands.put(header, func);
     }
 
-    public static boolean execute(String cmdHeader, String param, CommandResponse rsp) {
+    public static CommandResponse execute(String cmdHeader, String param) {
+        CommandResponse rsp = new CommandResponse();
+
         if (!commandHeaders.contains(cmdHeader)) {
             rsp.number = 0;
             rsp.text = "no such command!";
-            return false;
+            return rsp;
         }
 
         try {
@@ -76,7 +80,7 @@ class CommandExecutor {
             ex.printStackTrace();
         }
 
-        return true;
+        return rsp;
     }
 }
 
