@@ -16,6 +16,10 @@ java {
     toolchain.languageVersion = JavaLanguageVersion.of(17)
 }
 
+ext {
+    tg_api_version = "8.2.0"
+}
+
 minecraft {
     // The mappings can be changed at any time and must be in the following format.
     // Channel:   Version:
@@ -143,21 +147,22 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
-    implementation 'org.telegram:telegrambots-longpolling:8.0.0_mapped_official_1.20.1'
-    implementation 'org.telegram:telegrambots-client:8.0.0_mapped_official_1.20.1'
-    implementation 'org.telegram:telegrambots-meta:8.0.0_mapped_official_1.20.1'
-    implementation 'org.telegram:telegrambots-abilities:8.0.0_mapped_official_1.20.1'
-
-    minecraftLibrary fg.deobf('org.telegram:telegrambots-abilities:8.0.0')
-    minecraftLibrary fg.deobf('org.telegram:telegrambots-longpolling:8.0.0')
-    minecraftLibrary fg.deobf('org.telegram:telegrambots-client:8.0.0')
-    minecraftLibrary fg.deobf('org.telegram:telegrambots-meta:8.0.0')
+    implementation "org.telegram:telegrambots-longpolling:${tg_api_version}_mapped_official_1.20.1"
+    implementation "org.telegram:telegrambots-client:${tg_api_version}_mapped_official_1.20.1"
+    implementation "org.telegram:telegrambots-meta:${tg_api_version}_mapped_official_1.20.1"
+    implementation "org.telegram:telegrambots-abilities:${tg_api_version}_mapped_official_1.20.1"
+    
+    minecraftLibrary fg.deobf("org.telegram:telegrambots-abilities:${tg_api_version}")
+    minecraftLibrary fg.deobf("org.telegram:telegrambots-longpolling:${tg_api_version}")
+    minecraftLibrary fg.deobf("org.telegram:telegrambots-client:${tg_api_version}")
+    minecraftLibrary fg.deobf("org.telegram:telegrambots-meta:${tg_api_version}")
     minecraftLibrary fg.deobf('com.squareup.okhttp3:okhttp:4.9.3')
     minecraftLibrary fg.deobf('org.jetbrains.kotlin:kotlin-stdlib:1.9.22')
     minecraftLibrary fg.deobf('com.squareup.okio:okio-jvm:3.9.0')
     minecraftLibrary fg.deobf('com.fasterxml.jackson.core:jackson-databind:2.18.2')
     minecraftLibrary fg.deobf('com.fasterxml.jackson.core:jackson-core:2.18.2')
     minecraftLibrary fg.deobf('com.fasterxml.jackson.core:jackson-annotations:2.18.2')
+    minecraftLibrary fg.deobf('org.mapdb:mapdb:3.1.0')
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

@@ -16,7 +16,7 @@ public class TGBotManager {
     private final long player_group_id = ConfigManager.COMMON.player_group_id.get();
     private final TelegramClient tgClient = new OkHttpTelegramClient(BOT_TOKEN);
 
-    private static boolean isRunning = false;
+    private volatile boolean isRunning = false;
 
     private TGBotManager() {}
 
@@ -27,6 +27,8 @@ public class TGBotManager {
     public void start() {
         isRunning = true;
 
+        LogUtils.getLogger().info("bot_token: " + BOT_TOKEN);
+
         registerCommands();
 
         Thread tgBotThread = new Thread(() -> {
@@ -35,27 +37,18 @@ public class TGBotManager {
                 LogUtils.getLogger().info("MyTelegramBot successfully started!");
                 this.sendMessage(player_group_id, "MapBotForge started from test server!");
 
-                Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                    try {
-                        System.out.println("NekoTownBot GoodBye!");
-                        this.sendMessage(player_group_id, "MapBotForge stopped from test server!");
-                        botsApplication.unregisterBot(BOT_TOKEN);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Thread.currentThread().interrupt();
-                    }
-                }));
-
-                Thread.currentThread().join();
-            } catch (Exception e) {
+                while (isRunning) {}
+            } catch (TelegramApiException e) {
                 e.printStackTrace();
-            }
+            } catch (Exception ex) {}
         });
 
         tgBotThread.start();
     }
 
     public void stop() {
+        this.sendMessage(player_group_id, "MapBotForge stopped from test server!");
+
         isRunning = false;
     }
 

@@ -19,10 +19,12 @@ import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -74,9 +76,7 @@ public class Mapmodfortest {
         // Register the item to a creative tab
         modEventBus.addListener(this::addCreative);
 
-        MinecraftForge.EVENT_BUS.register(new PlayerListener());
-
-        FMLJavaModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigManager.COMMON_SPEC); 
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ConfigManager.COMMON_SPEC); 
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
@@ -94,6 +94,8 @@ public class Mapmodfortest {
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
         // Do something when the server starts
+        MinecraftForge.EVENT_BUS.register(new PlayerListener());
+
         LOGGER.info("Registering tgBot...");
         
         TGBotManager.getInstance().start();
